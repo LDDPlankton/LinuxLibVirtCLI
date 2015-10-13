@@ -1,0 +1,49 @@
+<domain type='kvm'>
+<name>{VM_NAME}</name>
+<uuid></uuid>
+<memory>{VM_MEMORY}</memory>
+<vcpu>{VM_VCPU}</vcpu>
+<os>
+	<type arch='x86_64'>hvm</type>
+	<boot dev='hd'/>
+	<bootmenu enable='yes'/>
+</os>
+<clock offset='utc'/>
+<on_poweroff>destroy</on_poweroff>
+<on_reboot>restart</on_reboot>
+<on_crash>destroy</on_crash>
+<devices>
+	<emulator>/usr/libexec/qemu-kvm</emulator>
+	<disk type='file' device='disk'>
+		<driver name='qemu' type='raw' cache='none'/>
+		<source file='{VM_LVG}'/>
+		<target dev='hda' bus='virtio'/>
+	</disk>
+	<disk type='file' device='cdrom'>
+		<driver name='qemu' type='raw'/>
+		<target dev='hdc' bus='ide'/>
+		<readonly/>
+		<address type='drive' controller='0' bus='1' target='0' unit='0'/>
+	</disk>
+	<interface type='bridge'>
+		<mac address='{VM_MACADDR}'/>
+		<source bridge='br0'/>
+	</interface>
+	<serial type='pty'>
+		<target port='0'/>
+	</serial>
+	<console type='pty'>
+		<target type='serial' port='0'/>
+	</console>
+	<controller type='usb' index='0'>
+		<address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x2'/>
+	</controller>
+	<controller type='ide' index='0'>
+		<address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x1'/>
+	</controller>
+	
+	<input type='tablet' bus='usb'/>
+	<input type='mouse' bus='ps2'/>
+	[HIDDEN_BLOCK_KEY=VNC_BLOCK]
+</devices>
+</domain>

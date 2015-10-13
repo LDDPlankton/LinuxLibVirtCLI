@@ -1,0 +1,42 @@
+INSTALL GUIDE: MANUAL FOR TESTING ONLY BY DEVS [DO NOT RUN/USE]!
+
+ yum install bridge-utils kvm libvirt qemu-kvm qemu-kvm-tools virt-viewer
+ service libvirtd start
+ chkconfig libvirtd on
+ mkdir /usr/local/libvirtvm
+ 
+ CREATE PHYSICAL VOLUME
+ pvcreate /dev/sdb1
+ 
+ CREATE VOLUME GROUP
+ vgcreate SVM_1 /dev/sdb1
+ 
+ DISPLAY INFO
+ vgdisplay #VOLUME INFO
+ lvdisplay #VPS
+ 
+ CREATE VPS VOLUME
+ lvcreate -n vs1001 --size 30G SVM_1
+ lvdisplay SVM_1 /dev/SVM_1/vs1001
+ 
+ RESIZE VPS VOLUME
+ lvresize -L {SPACE}G /dev/SVM_1/vs1001
+ 
+ CLONE
+ virt-clone -file /dev/mapper/vg-vn --force
+ 
+ DELETE
+ lvremove -f /dev/SVM_1/vs1001
+ 
+ MOUNT
+ /sbin/kpartx -l /dev/SVM_1/vs1001
+ /sbin/kpartx -av /dev/SVM_1/vs1001
+ mkdir /tmp/tmp1001
+ mount /dev/mapper/SVM_1-vs1001 /tmp/tmp1001
+ umount /tmp/tmp1001
+ rm -rf /tmp/tmp1001
+ kpartx -d /dev/SVM_1/vs1001
+ 
+ SNAPSHOTS
+ lvcreate --size 100M --snapshot --name snap /dev/vg00/lvol1
+ lvs

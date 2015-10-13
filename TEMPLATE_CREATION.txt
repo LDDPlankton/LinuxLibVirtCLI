@@ -1,0 +1,14 @@
+OS TEMPLATE CREATION [RAW]:
+#1. Create temp IMG File
+qemu-img create -f raw /home/tmpOS_NAMEx64.img 5G
+
+#2. Install the OS
+virt-install -n template_OSNAMEx64 -r 1024 --disk path=/home/tmpOS_NAMEx64.img,format=raw --location=/home/OSDVD_HERE.iso --extra-args="console=ttyS0"
+pwd: passwordtpl
+
+#3. After install, shutdown + undefine
+virsh shutdown template_OSNAMEx64
+virsh undefine template_OSNAMEx64
+
+#4. Then to copy to new VM's, use DD
+dd bs=1M if=/home/tmpOS_NAMEx64.img of=/dev/VM_GROUP1/VM_ID
